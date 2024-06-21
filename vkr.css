@@ -15,7 +15,11 @@
   }
 
   @page :first {
-    counter-increment: page var(--start-page, 3);
+    counter-increment: page var(--start-page, 2);
+
+    @bottom-center {
+      content: "";
+    }
   }
 
   body {
@@ -55,12 +59,11 @@
   h1.chapter {
     counter-increment: chapternum;
     counter-reset: h2counter;
-    page-break-before: always;
   }
 
   h1.chapter:before {
     content: var(--chapter, "Глава ")
-      counter(chapternum, var(--chapter-number-style, upper-roman)) ". ";
+      counter(chapternum, var(--chapter-number-style, decimal)) ". ";
   }
 
   /* ================================================================= */
@@ -236,6 +239,33 @@
   ul > li {
     text-indent: 0.3em;
     margin-bottom: 0.5em;
+  }
+
+  /* ================================================================= */
+  /* Оглавление. */
+
+  #оглавление + ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  #оглавление + ul ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  #оглавление + ul a {
+    color: black;
+    text-decoration: none;
+    display: block;
+  }
+
+  #оглавление + ul a::after {
+    content: leader(".") target-counter(attr(href), page);
+  }
+
+  #оглавление + ul li {
+    margin: 0;
   }
 
   /* ================================================================= */

@@ -21,7 +21,9 @@
 - [x] Изображения
 - [x] Таблицы
 - [x] Списки
-- [ ] Оглавление
+- [X] Оглавление
+- [ ] Список литературы
+- [ ] Цитаты
 
 ## Использование
 
@@ -41,14 +43,14 @@
 
 ```css
 :root {
-  --start-page: 3;
+  --start-page: 2;
 
   --chapter: "Глава ";
   /* Расположение подзаголовков. */
   --subheader-align: center;
 
   /* https://developer.mozilla.org/en-US/docs/Web/CSS/list-style-type */
-  --chapter-number-style: upper-roman;
+  --chapter-number-style: decimal;
 
   /* Шрифт кода. */
   --font-mono: monospace;
