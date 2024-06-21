@@ -1,0 +1,248 @@
+@media print {
+  @page {
+    size: A4;
+
+    margin-left: 3.5cm;
+    margin-right: 1cm;
+
+    margin-top: 1.5cm;
+    margin-bottom: 2cm;
+
+    @bottom-center {
+      content: counter(page);
+      font-size: 14pt;
+    }
+  }
+
+  @page :first {
+    counter-increment: page var(--start-page, 3);
+  }
+
+  body {
+    /* Настройка типографии. */
+    font-family: "Times New Roman", Times, serif;
+    font-size: 14pt;
+    line-height: 1.5;
+    text-align: justify;
+
+    /* Сброс счётчиков. */
+    counter-reset: imagenum;
+    counter-reset: tablenum;
+  }
+
+  p {
+    text-indent: 1.5cm;
+
+    margin-top: 0em;
+    margin-bottom: 0em;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 20pt;
+
+    margin-bottom: 1em;
+
+    counter-reset: h2counter;
+  }
+
+  /* ================================================================= */
+  /* Главы. */
+
+  h1.chapter {
+    counter-increment: chapternum;
+    counter-reset: h2counter;
+    page-break-before: always;
+  }
+
+  h1.chapter:before {
+    content: var(--chapter, "Глава ")
+      counter(chapternum, var(--chapter-number-style, upper-roman)) ". ";
+  }
+
+  /* ================================================================= */
+  /* Подзаголовки. */
+
+  h1.chapter ~ h2,
+  h1.chapter ~ h3 {
+    text-align: var(--subheader-align, center);
+  }
+
+  h1.chapter ~ h2 {
+    font-size: 16pt;
+    counter-increment: h2counter;
+  }
+
+  h1.chapter ~ h3 {
+    font-size: 14pt;
+    counter-increment: h3counter;
+  }
+
+  h1.chapter ~ h2::before {
+    content: counter(chapternum) "." counter(h2counter) ".\0000a0\0000a0";
+    counter-reset: h3counter;
+  }
+
+  h1.chapter ~ h2 ~ h3::before {
+    content: counter(chapternum) "." counter(h2counter) "." counter(h3counter)
+      ".\0000a0\0000a0";
+  }
+
+  /* ================================================================= */
+  /* Приложения. */
+
+  h1.appendix {
+    page-break-before: always;
+  }
+
+  h1.appendix:before {
+    counter-increment: appendixnum;
+    content: "Приложение " counter(appendixnum, upper-alpha) ": ";
+  }
+
+  /* ================================================================= */
+  /* Блоки кода. */
+
+  code {
+    font-family: var(--font-mono, monospace);
+    font-size: 11pt;
+  }
+
+  pre {
+    page-break-inside: avoid;
+    padding: 0;
+    white-space: pre-line;
+
+    padding: 0.5rem;
+
+    /* border-left: 1pt dashed gray; */
+  }
+
+  pre code {
+    display: block;
+    margin-left: 3pt;
+  }
+
+  h1.appendix ~ pre {
+    margin-left: 0;
+  }
+
+  h1.appendix ~ pre > code {
+    font-size: 8pt;
+  }
+
+  /* ================================================================= */
+  /* Сноски. */
+
+  .footnotes {
+    float: footnote;
+
+    font-size: 12.5pt;
+    line-height: normal;
+
+    text-indent: 0;
+  }
+
+  ::footnote-call {
+    font-size: small;
+    vertical-align: super;
+  }
+
+  ::footnote-marker {
+    vertical-align: super;
+    font-size: smaller;
+    content: counter(footnote);
+    margin-right: 0.5em;
+  }
+
+  @page {
+    @footnote {
+      border-top: 1pt solid black;
+    }
+  }
+
+  /* ================================================================= */
+  /* Фигуры. */
+
+  figure {
+    text-align: center;
+    font-size: 13pt;
+  }
+
+  table,
+  figure,
+  img {
+    page-break-inside: avoid;
+  }
+
+  /* ================================================================= */
+  /* Рисунки. */
+
+  figure img + figcaption:before {
+    counter-increment: imagenum;
+    content: "Рис. " counter(imagenum) ". ";
+  }
+
+  /* ================================================================= */
+  /* Таблицы. */
+
+  figure > table + figcaption:before {
+    counter-increment: tablenum;
+    content: "Таблица " counter(tablenum) ". ";
+  }
+
+  table {
+    font-size: 14pt;
+    background: white;
+    max-width: 70%;
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+
+    margin-left: auto;
+    margin-right: auto;
+  }
+  th {
+    font-weight: normal;
+    border-bottom: 2px solid black;
+    padding: 10px 8px;
+  }
+  td {
+    padding: 9px 8px;
+    transition: 0.3s linear;
+  }
+
+  /* ================================================================= */
+  /* Списки. */
+
+  ul > li::marker {
+    font-size: 18pt;
+  }
+
+  ol,
+  ul {
+    margin-left: 1em;
+    list-style-position: outside;
+  }
+
+  ol ul,
+  ul ol {
+    margin-left: 0.5em;
+  }
+
+  ul > li {
+    text-indent: 0.3em;
+    margin-bottom: 0.5em;
+  }
+
+  /* ================================================================= */
+  /* Common. */
+
+  .w-50 {
+    width: 50%;
+  }
+
+  .w-60 {
+    width: 60%;
+  }
+}
