@@ -63,17 +63,17 @@
   /* ================================================================= */
   /* Подзаголовки. */
 
-  h1.chapter ~ h2,
-  h1.chapter ~ h3 {
+  h2,
+  h3 {
     text-align: var(--subheader-align, center);
   }
 
-  h1.chapter ~ h2 {
+  h2 {
     font-size: 16pt;
     counter-increment: h2counter;
   }
 
-  h1.chapter ~ h3 {
+  h3 {
     font-size: 14pt;
     counter-increment: h3counter;
   }
