@@ -44,6 +44,9 @@
     margin-bottom: 1em;
 
     counter-reset: h2counter;
+
+    page-break-after: avoid;
+    page-break-before: always;
   }
 
   /* ================================================================= */
@@ -172,7 +175,7 @@
   table,
   figure,
   img {
-    page-break-inside: avoid;
+    page-break-inside: var(--figure-break-inside, avoid);
   }
 
   /* ================================================================= */
