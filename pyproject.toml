@@ -17,6 +17,10 @@ beautifulsoup4 = "^4.12.3"
 pypandoc = "^1.13"
 
 
+[tool.poetry.scripts]
+vkr-build = "vkr_build.console:run"
+
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
