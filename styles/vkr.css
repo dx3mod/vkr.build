@@ -56,15 +56,17 @@
   /* ================================================================= */
   /* Главы. */
 
-  h1.chapter {
+  h1:not(.non-numbering) {
     counter-increment: chapternum;
-    counter-reset: h2counter;
   }
 
-  h1.chapter:before {
-    content: var(--chapter, "Глава ")
-      counter(chapternum, var(--chapter-number-style, decimal)) ". ";
+  h1:not(.non-numbering):before {
+    content: var(--chapter, "Глава ") counter(chapternum, var(--chapter-number-style, decimal)) ". ";
   }
+
+  /* h1 .non-numbering:before {
+    content: "";
+  } */
 
   /* ================================================================= */
   /* Подзаголовки. */
@@ -84,14 +86,13 @@
     counter-increment: h3counter;
   }
 
-  h1.chapter ~ h2::before {
+  h1:not(.non-numbering)~h2::before {
     content: counter(chapternum) "." counter(h2counter) ".\0000a0\0000a0";
     counter-reset: h3counter;
   }
 
-  h1.chapter ~ h2 ~ h3::before {
-    content: counter(chapternum) "." counter(h2counter) "." counter(h3counter)
-      ".\0000a0\0000a0";
+  h1:not(.non-numbering)~h2~h3::before {
+    content: counter(chapternum) "." counter(h2counter) "." counter(h3counter) ".\0000a0\0000a0";
   }
 
   /* ================================================================= */
@@ -129,11 +130,11 @@
     margin-left: 3pt;
   }
 
-  h1.appendix ~ pre {
+  h1.appendix~pre {
     margin-left: 0;
   }
 
-  h1.appendix ~ pre > code {
+  h1.appendix~pre>code {
     font-size: 8pt;
   }
 
@@ -184,7 +185,7 @@
   /* ================================================================= */
   /* Рисунки. */
 
-  figure img + figcaption:before {
+  figure img+figcaption:before {
     counter-increment: imagenum;
     content: "Рис. " counter(imagenum) ". ";
   }
@@ -192,7 +193,7 @@
   /* ================================================================= */
   /* Таблицы. */
 
-  figure > table + figcaption:before {
+  figure>table+figcaption:before {
     counter-increment: tablenum;
     content: "Таблица " counter(tablenum) ". ";
   }
@@ -208,11 +209,13 @@
     margin-left: auto;
     margin-right: auto;
   }
+
   th {
     font-weight: normal;
     border-bottom: 2px solid black;
     padding: 10px 8px;
   }
+
   td {
     padding: 9px 8px;
     transition: 0.3s linear;
@@ -221,7 +224,7 @@
   /* ================================================================= */
   /* Списки. */
 
-  ul > li::marker {
+  ul>li::marker {
     font-size: 18pt;
   }
 
@@ -236,7 +239,7 @@
     margin-left: 0.5em;
   }
 
-  ul > li {
+  ul>li {
     text-indent: 0.3em;
     margin-bottom: 0.5em;
   }
@@ -244,27 +247,27 @@
   /* ================================================================= */
   /* Оглавление. */
 
-  #оглавление + ul {
+  #оглавление+ul {
     list-style-type: none;
     padding: 0;
   }
 
-  #оглавление + ul ul {
+  #оглавление+ul ul {
     list-style-type: none;
     padding: 0;
   }
 
-  #оглавление + ul a {
+  #оглавление+ul a {
     color: black;
     text-decoration: none;
     display: block;
   }
 
-  #оглавление + ul a::after {
+  #оглавление+ul a::after {
     content: leader(".") target-counter(attr(href), page);
   }
 
-  #оглавление + ul li {
+  #оглавление+ul li {
     margin: 0;
   }
 

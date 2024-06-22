@@ -10,6 +10,8 @@ class DocumentConfiguration(BaseModel):
     font_mono: str = Field(default="monospace")
     avoid_figure: bool = Field(default=True)
 
+    files: list[Path]
+
 
 def read_config(path: Path) -> DocumentConfiguration:
     try:
