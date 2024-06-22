@@ -27,7 +27,9 @@ def read_files(filenames: list[Path]):
         results = pool.map(read_file, filenames)
         raw_source = "\n\n".join(results)
 
-    return pypandoc.convert_text(raw_source, "html", format="md")
+    return pypandoc.convert_text(
+        raw_source, "html", format="markdown+smart", extra_args=["-V", "lang=ru"]
+    )
 
 
 def main(

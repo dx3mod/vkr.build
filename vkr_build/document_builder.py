@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
-from bs4 import BeautifulSoup
+from typing import Collection
+from bs4 import BeautifulSoup, Tag
 from pydantic import BaseModel
 
 from vkr_build.utils import STYLES_PATH
@@ -66,19 +67,12 @@ class DocumentBuilder:
 
         page.head.append(page.new_tag("meta", charset="UTF-8"))  # type: ignore
 
-        # toc_header = page.new_tag(
-        #     "h1", id="оглавление", attrs={"class": "non-numbering"}
-        # )
-        # toc_header.append("Оглавление")
-
-        # page.body.append(toc_header)
         page.body.append(self._content_html)  # type: ignore
 
         return page
 
     def _build_toc(self):
         for header in self._content_html.select("h1, h2, h3"):
-            # title, classes = parse_header_classes(header.text.strip())
 
             title = header.text.strip()
             classes = header.get("class") or ""
@@ -102,11 +96,6 @@ class DocumentBuilder:
     def _preprocess_images(self):
         for image_tag in self._content_html.select("img"):
             image_tag["style"] = image_tag.get("style") or ""
-
-            # src_url = image_tag.attrs["src"]
-            # image_tag.attrs["src"] = (
-            #     src_url if os.path.isabs(src_url) else Path(src_url).resolve()
-            # )
 
             if image_tag.has_attr("width"):
                 width = image_tag.attrs["width"]
