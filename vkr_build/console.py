@@ -2,6 +2,7 @@ import multiprocessing
 from pathlib import Path
 from sys import stderr
 from typing import Annotated
+from bs4 import Stylesheet
 import pydantic
 import pypandoc
 import typer
@@ -52,8 +53,14 @@ def main(
             url_fetcher=weasyprint.default_url_fetcher,
         )
 
+        stylesheets = []
+
+        if user_css := config.css:
+            print("[CSS]", user_css)
+            stylesheets.append(weasyprint.CSS(filename=user_css))
+
         print("[WEASYPRINT]", config.output)
-        html.write_pdf(config.output)
+        html.write_pdf(config.output, stylesheets=stylesheets)
 
         exit(0)
 

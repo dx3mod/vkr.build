@@ -8,3 +8,4 @@ files = [
 ]
 
 output = "ВКР Влад.pdf"
+css = "./custom.css"

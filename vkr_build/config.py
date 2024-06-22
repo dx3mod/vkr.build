@@ -13,6 +13,8 @@ class DocumentConfiguration(BaseModel):
     files: list[Path]
     output: Path = Field(default=Path("output.pdf"))
 
+    css: Path | None = Field(default=None)
+
 
 def read_config(path: Path) -> DocumentConfiguration:
     try:
