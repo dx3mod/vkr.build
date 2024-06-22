@@ -44,7 +44,7 @@ def main(
         source = read_files(config.files)
 
         document = DocumentBuilder(source)
-        document_html = document.build()
+        document_html = document.build(config)
 
         html = weasyprint.HTML(
             string=str(document_html),
