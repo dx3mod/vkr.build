@@ -52,8 +52,8 @@ def main(
             url_fetcher=weasyprint.default_url_fetcher,
         )
 
-        print("[WEASYPRINT] output.pdf")
-        html.write_pdf("output.pdf")
+        print("[WEASYPRINT]", config.output)
+        html.write_pdf(config.output)
 
         exit(0)
 

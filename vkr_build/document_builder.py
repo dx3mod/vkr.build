@@ -67,6 +67,13 @@ class DocumentBuilder:
 
         page.head.append(page.new_tag("meta", charset="UTF-8"))  # type: ignore
 
+        toc_header = page.new_tag(
+            "h1", attrs={"id": "оглавление", "class": "non-numbering"}
+        )
+        toc_header.append("Оглавление")
+
+        page.body.append(toc_header)  # type: ignore
+
         page.body.append(self._content_html)  # type: ignore
 
         return page

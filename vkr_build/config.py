@@ -11,6 +11,7 @@ class DocumentConfiguration(BaseModel):
     avoid_figure: bool = Field(default=True)
 
     files: list[Path]
+    output: Path = Field(default=Path("output.pdf"))
 
 
 def read_config(path: Path) -> DocumentConfiguration:
