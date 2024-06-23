@@ -1,61 +1,27 @@
-import os
-from pathlib import Path
-from typing import Collection
-from bs4 import BeautifulSoup, Tag
-from pydantic import BaseModel
+from bs4 import BeautifulSoup
 
 from vkr_build.config import DocumentConfiguration
+from vkr_build.toc import TableOfContents
 from vkr_build.utils import STYLES_PATH
 
 
-class Header(BaseModel):
-    title: str
-    header_id: str
-
-
-class SubSection(Header):
-    pass
-
-
-class Section(Header):
-    subsections: list[SubSection]
-
-
-class Chapter(Header):
-    numbering: bool
-    sections: list[Section]
-
-
-class TableOfContents:
-    def __init__(self) -> None:
-        self.chapters: list[Chapter] = []
-
-    def add_chapter(self, title: str, id: str, numbering: bool):
-        self.chapters.append(
-            Chapter(title=title, header_id=id, sections=[], numbering=numbering)
-        )
-
-    def add_section(self, title: str, id: str):
-        self.chapters[-1].sections.append(
-            Section(title=title, header_id=id, subsections=[])
-        )
-
-    def add_subsection(self, title: str, id: str):
-        self.chapters[-1].sections[-1].subsections.append(
-            SubSection(
-                title=title,
-                header_id=id,
-            )
-        )
-
-
 class DocumentBuilder:
-    def __init__(self, /, source: str) -> None:
+    def __init__(self, /, source: str, config: DocumentConfiguration):
         self._content_html = BeautifulSoup(source, "html.parser")
+        self._config = config
+
         self._toc = TableOfContents()
 
-    def build(self, /, config: DocumentConfiguration):
-        self._build_toc()
+        self._chapter_counter = 1
+        self._appendix_counter = 1
+
+        self._section_counter = 1
+        self._subsection_counter = 1
+
+        self._numbering = True
+
+    def build(self):
+        self._preprocess_headers()
         self._preprocess_images()
 
         page = BeautifulSoup()
@@ -69,59 +35,15 @@ class DocumentBuilder:
             )
         )
 
-        # Оглавление для h1, h2
+        # Оглавление
 
-        toc_header = page.new_tag(
-            "h1", attrs={"id": "оглавление", "class": "non-numbering"}
-        )
-        toc_header.append("Оглавление")
-        page.body.append(toc_header)  # type: ignore
+        toc_title = page.new_tag("h1", attrs={"id": "оглавление"})
+        toc_title.append(self._config.toc_title)
 
-        toc_list = page.new_tag("ul")
+        page.body.append(toc_title)  # type: ignore
 
-        chapter_counter = 1
-
-        for chapter in self._toc.chapters:
-            chapter_li = page.new_tag("li")
-            chapter_link = page.new_tag("a", attrs={"href": f"#{chapter.header_id}"})
-            bold = page.new_tag("b")
-
-            if chapter.numbering:
-                bold.append(
-                    f"{config.chapter_prefix} {chapter_counter}. {chapter.title}"
-                )
-                chapter_counter += 1
-            else:
-                bold.append(chapter.title)
-
-            chapter_link.append(bold)
-            chapter_li.append(chapter_link)
-
-            section_counter = 1
-
-            section_ul = page.new_tag("ul")
-            chapter_li.append(section_ul)
-
-            for section in chapter.sections:
-                section_li = page.new_tag("li")
-                section_link = page.new_tag(
-                    "a", attrs={"href": f"#{section.header_id}"}
-                )
-
-                if chapter.numbering:
-                    section_link.append(
-                        f"{chapter_counter - 1}.{section_counter} {section.title}"
-                    )
-                    section_counter += 1
-                else:
-                    section_link.append(section.title)
-
-                section_li.append(section_link)
-                section_ul.append(section_li)
-
-            toc_list.append(chapter_li)
-
-        page.body.append(toc_list)  # type: ignore
+        toc_ul = self._render_toc(page)
+        page.body.append(toc_ul)  # type: ignore
 
         # Тело
 
@@ -129,27 +51,52 @@ class DocumentBuilder:
 
         return page
 
-    def _build_toc(self):
+    def _preprocess_headers(self):
         for header in self._content_html.select("h1, h2, h3"):
-
             title = header.text.strip()
             classes = header.get("class") or ""
+
+            if header.name == "h1":
+                self._numbering = "non-numbering" not in classes
+
+            match header.name:
+                case "h1":
+                    self._reset_section_counter()
+
+                    if "appendix" in classes:
+                        title = (
+                            f"Приложение {chr(64 + self._appendix_counter)}. {title}"
+                        )
+                        self._appendix_counter += 1
+                    elif self._numbering:
+                        title = f"{self._config.chapter_prefix} {self._chapter_counter}. {title}"
+                        self._chapter_counter += 1
+                case "h2":
+                    self._subsection_counter = 1
+
+                    if self._numbering:
+                        title = f"{self._chapter_counter - 1}.{self._section_counter} {title}"
+                        self._section_counter += 1
+                case "h3":
+                    if self._numbering:
+                        title = f"{self._chapter_counter - 1}.{self._section_counter- 1}.{self._subsection_counter} {title}"
 
             header.attrs["id"] = title.lower().replace(" ", "-")
             header_id = header.attrs["id"]
 
+            header.string = title
+
             match header.name:
                 case "h1":
-                    self._toc.add_chapter(
-                        title, header_id, "non-numbering" not in classes
-                    )
+                    self._toc.add_chapter(title, header_id)
                 case "h2":
                     self._toc.add_section(title, header_id)
                 case "h3":
                     self._toc.add_subsection(title, header_id)
 
-            if not header.has_key("class"):
-                header["class"] = ""
+    def _reset_section_counter(self):
+        self._section_counter = 1
+        self._subsection_counter = 1
 
     def _preprocess_images(self):
         for image_tag in self._content_html.select("img"):
@@ -160,3 +107,42 @@ class DocumentBuilder:
                 width = f"{width}px" if not width.endswith(("px", "%")) else width
 
                 image_tag["style"] += f"width: {width};"
+
+    def _render_toc(self, page: BeautifulSoup):
+        toc_ul = page.new_tag("ul")
+
+        def new_li_a_tag(title: str, header_id: str, /, bold=False):
+            li = page.new_tag("li")
+            a = page.new_tag("a", attrs={"href": f"#{header_id}"})
+
+            if bold:
+                b = page.new_tag("b")
+                b.append(title)
+                a.append(b)
+            else:
+                a.append(title)
+
+            li.append(a)
+
+            return li
+
+        for chapter in self._toc.chapters:
+            chapter_li = new_li_a_tag(chapter.title, chapter.header_id, bold=True)
+
+            section_ul = page.new_tag("ul")
+            for section in chapter.sections:
+                section_li = new_li_a_tag(section.title, section.header_id)
+
+                subsection_ul = page.new_tag("ul")
+                for subsection in section.subsections:
+                    subsection_ul.append(
+                        new_li_a_tag(subsection.title, subsection.header_id)
+                    )
+
+                section_li.append(subsection_ul)
+                section_ul.append(section_li)
+
+            chapter_li.append(section_ul)
+            toc_ul.append(chapter_li)
+
+        return toc_ul

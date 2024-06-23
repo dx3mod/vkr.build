@@ -9,3 +9,5 @@ files = [
 
 output = "ВКР Влад.pdf"
 css = "./custom.css"
+
+toc_title = "Содержание"

@@ -60,9 +60,9 @@
     counter-increment: chapternum;
   }
 
-  h1:not(.non-numbering):before {
+  /* h1:not(.non-numbering):before {
     content: var(--chapter, "Глава ") counter(chapternum, var(--chapter-number-style, decimal)) ". ";
-  }
+  } */
 
   /* h1 .non-numbering:before {
     content: "";
@@ -87,13 +87,13 @@
   }
 
   h1:not(.non-numbering)~h2::before {
-    content: counter(chapternum) "." counter(h2counter) ".\0000a0\0000a0";
+    /* content: counter(chapternum) "." counter(h2counter) ".\0000a0\0000a0"; */
     counter-reset: h3counter;
   }
 
-  h1:not(.non-numbering)~h2~h3::before {
+  /* h1:not(.non-numbering)~h2~h3::before {
     content: counter(chapternum) "." counter(h2counter) "." counter(h3counter) ".\0000a0\0000a0";
-  }
+  } */
 
   /* ================================================================= */
   /* Приложения. */
@@ -104,7 +104,7 @@
 
   h1.appendix:before {
     counter-increment: appendixnum;
-    content: "Приложение " counter(appendixnum, upper-alpha) ": ";
+    /* content: "Приложение " counter(appendixnum, upper-alpha) ": "; */
   }
 
   /* ================================================================= */

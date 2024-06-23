@@ -9,6 +9,7 @@ class DocumentConfiguration(BaseModel):
     chapter_prefix: str = Field(default="Глава ")
     font_mono: str = Field(default="monospace")
     avoid_figure: bool = Field(default=True)
+    toc_title: str = Field(default="Оглавление")
 
     files: list[Path]
     output: Path = Field(default=Path("output.pdf"))
