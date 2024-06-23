@@ -1,5 +1,4 @@
 from bs4 import BeautifulSoup
-
 from vkr_build.config import DocumentConfiguration
 from vkr_build.toc import TableOfContents
 from vkr_build.utils import STYLES_PATH

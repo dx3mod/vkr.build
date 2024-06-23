@@ -2,19 +2,19 @@ import multiprocessing
 from pathlib import Path
 from sys import stderr
 from typing import Annotated
-from bs4 import Stylesheet
+
 import pydantic
 import pypandoc
 import typer
 import weasyprint
-
+from bs4 import Stylesheet
 from vkr_build.config import read_config
 from vkr_build.document_builder import DocumentBuilder
 
 
 def read_file(entry: Path):
     if entry.suffix in (".html", ".md"):
-        print("[RENDER]", entry)
+        print("[READ]", entry)
 
         with open(entry, "r") as file:
             return file.read()
@@ -24,12 +24,13 @@ def read_file(entry: Path):
 def read_files(filenames: list[Path]):
     """Читает HTML/Markdown файлы в одну HTML-строку."""
 
-    with multiprocessing.Pool(processes=4) as pool:
-        results = pool.map(read_file, filenames)
-        raw_source = "\n\n".join(results)
+    raw_sources = map(read_file, filenames)
 
     return pypandoc.convert_text(
-        raw_source, "html", format="markdown+smart", extra_args=["-V", "lang=ru"]
+        "\n\n".join(raw_sources),
+        "html",
+        format="markdown+smart",
+        extra_args=["-V", "lang=ru"],
     )
 
 

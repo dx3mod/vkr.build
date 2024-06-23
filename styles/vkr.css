@@ -16,10 +16,17 @@
 
   @page :first {
     counter-increment: page var(--start-page, 2);
+  }
 
+  @page without_number {
     @bottom-center {
       content: "";
     }
+  }
+
+  #оглавление,
+  #оглавление+ul {
+    page: without_number;
   }
 
   body {

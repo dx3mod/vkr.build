@@ -1,7 +1,8 @@
+import tomllib
 from pathlib import Path
 from sys import stderr
+
 from pydantic import BaseModel, Field
-import tomllib
 
 
 class DocumentConfiguration(BaseModel):
