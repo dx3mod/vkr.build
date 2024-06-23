@@ -6,16 +6,13 @@ from pydantic import BaseModel, Field
 
 
 class DocumentConfiguration(BaseModel):
-    start_page: int = Field(default=2)
     chapter_prefix: str = Field(default="Глава ")
-    font_mono: str = Field(default="monospace")
-    avoid_figure: bool = Field(default=True)
     toc_title: str = Field(default="Оглавление")
 
     files: list[Path]
     output: Path = Field(default=Path("output.pdf"))
 
-    css: Path | None = Field(default=None)
+    css: Path = Field(default=Path("custom.css"))
 
 
 def read_config(path: Path) -> DocumentConfiguration:

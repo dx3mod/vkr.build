@@ -56,9 +56,9 @@ def main(
 
         stylesheets = []
 
-        if user_css := config.css:
-            print("[CSS]", user_css)
-            stylesheets.append(weasyprint.CSS(filename=user_css))
+        if config.css.exists():
+            print("[CSS]", config.css)
+            stylesheets.append(weasyprint.CSS(filename=config.css))
 
         print("[WEASYPRINT]", config.output)
         html.write_pdf(config.output, stylesheets=stylesheets)

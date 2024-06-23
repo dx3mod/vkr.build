@@ -148,7 +148,8 @@
   /* ================================================================= */
   /* Сноски. */
 
-  .footnotes {
+  .footnotes,
+  footnote {
     float: footnote;
 
     font-size: 12.5pt;
