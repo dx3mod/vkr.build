@@ -11,6 +11,7 @@
 
 ### Примеры работ 
 
+- [Комплексный пример со всеми возможностями](./examples/demo/) ([PDF](./examples/demo/output.pdf))
 - [Реальный ВКР по юриспруденции](./examples/simple-full) ([PDF](./examples/simple-full/ВКР%20Влад.pdf)) 
 
 ### Поддержка 

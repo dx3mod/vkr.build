@@ -1,6 +1,8 @@
+import logging
 import multiprocessing
 from pathlib import Path
 from sys import stderr
+import sys
 from typing import Annotated
 
 import pydantic
@@ -59,6 +61,9 @@ def main(
         if config.css.exists():
             print("[CSS]", config.css)
             stylesheets.append(weasyprint.CSS(filename=config.css))
+
+        logger = logging.getLogger("weasyprint")
+        logger.addHandler(logging.StreamHandler(sys.stdout))
 
         print("[WEASYPRINT]", config.output)
         html.write_pdf(config.output, stylesheets=stylesheets)

@@ -39,6 +39,8 @@
     /* Сброс счётчиков. */
     counter-reset: imagenum;
     counter-reset: tablenum;
+
+    counter-set: imagenum 0;
   }
 
   p {
@@ -107,11 +109,9 @@
 
   h1.appendix {
     page-break-before: always;
-  }
-
-  h1.appendix:before {
     counter-increment: appendixnum;
-    /* content: "Приложение " counter(appendixnum, upper-alpha) ": "; */
+
+    counter-set: imagenum 0;
   }
 
   /* ================================================================= */
@@ -123,13 +123,10 @@
   }
 
   pre {
-    page-break-inside: avoid;
     padding: 0;
-    white-space: pre-line;
+    white-space: pre-wrap;
 
     padding: 0.5rem;
-
-    /* border-left: 1pt dashed gray; */
   }
 
   pre code {
@@ -154,6 +151,7 @@
 
     font-size: 12.5pt;
     line-height: normal;
+    text-align: justify;
 
     text-indent: 0;
   }
@@ -184,18 +182,20 @@
     font-size: 13pt;
   }
 
-  table,
-  figure,
-  img {
+  figure {
     page-break-inside: var(--figure-break-inside, avoid);
   }
 
   /* ================================================================= */
   /* Рисунки. */
 
-  figure img+figcaption:before {
+  .appendix~figure>img+figcaption:before {
+    content: "Рисунок " counter(appendixnum, upper-alpha) "." counter(imagenum) ". ";
+  }
+
+  figure>img+figcaption:before {
     counter-increment: imagenum;
-    content: "Рис. " counter(imagenum) ". ";
+    content: "Рисунок " counter(imagenum) ". ";
   }
 
   /* ================================================================= */
