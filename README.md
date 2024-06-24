@@ -32,14 +32,16 @@
 
 ## Установка 
 
-Зависимости:
-- Python 3.12+
-- Pandoc 
+#### Зависимости 
 
-Собранные пакеты можно найти на [странице релизов](https://github.com/dx3mod/vkr.build/releases).
-```console
-$ pip install vkr_build-<version>-<...>.whl
+- Python 3.12+
+- [pandoc](https://pandoc.org/)
+
 ```
+pip install --upgrade vkr-build
+```
+
+Собранные пакеты можно также найти на [странице релизов](https://github.com/dx3mod/vkr.build/releases).
 
 
 ## Использование 
