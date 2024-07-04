@@ -10,17 +10,19 @@ import weasyprint
 
 from vkr_build.config import read_config
 from vkr_build.document_builder import DocumentBuilder
+from vkr_build.preprocess_stages.images import ImagesPreprocessStage
+from vkr_build.validators.toc import TableOfContentsValidator
+from vkr_build.validators.validator import DocumentValidator
 
 
-def read_file(entry: Path):
-    if entry.suffix in (".html", ".md"):
-        with open(entry, "r") as file:
-            return file.read()
-    return ""
-
-
-def read_files(filenames: list[Path]):
+def collect_files_to_html(filenames: list[Path]):
     """Читает HTML/Markdown файлы в одну HTML-строку."""
+
+    def read_file(entry: Path):
+        if entry.suffix in (".html", ".md"):
+            with open(entry, "r") as file:
+                return file.read()
+        return ""
 
     raw_sources = map(read_file, filenames)
 
@@ -52,13 +54,15 @@ def run():
         for filename in config.files:
             print(" ", filename)
 
+        print()
+
         # Чтение файлов
 
         reading_files_time = time.time()
         print("Конвертация файлов... ", end="")
         sys.stdout.flush()
 
-        source = read_files(config.files)
+        source_html = collect_files_to_html(config.files)
 
         print(time.time() - reading_files_time, "секунд")
 
@@ -68,32 +72,48 @@ def run():
         print("Процессинг документа... ", end="")
         sys.stdout.flush()
 
-        document = DocumentBuilder(source, config=config)
-        document_html = document.build()
+        document = DocumentBuilder(
+            source_html,
+        )
+        document.add_preprocess_stage(ImagesPreprocessStage())
+
+        html = document.build()
 
         print(time.time() - document_processing_time, "секунд")
 
-        # Генерация PDF-файла
+        # Валидация
 
-        html = weasyprint.HTML(
-            string=str(document_html),
-            base_url=".",
-            encoding="utf-8",
-            url_fetcher=weasyprint.default_url_fetcher,
-        )
+        print()
+        print("Валидация:")
+
+        validators = [TableOfContentsValidator()]
+        for validator in validators:
+            messages = validator.validate(
+                DocumentValidator.Document(
+                    soup=document._soup, table_of_contents=document.table_of_contents
+                )
+            )
+
+            for message in messages:
+                print(" ", message)
+
+        print()
+
+        # Компиляция
 
         stylesheets = []
 
         if config.css.exists():
-            print("[CSS]", config.css)
+            print("Использованы стили:", config.css)
             stylesheets.append(weasyprint.CSS(filename=config.css))
 
         logger = logging.getLogger("weasyprint")
         logger.addHandler(logging.StreamHandler(sys.stdout))
 
-        print("Output:", config.output)
+        print("Файл сохранён по пути:", config.output)
 
         start_weasyprint_time = time.time()
+
         html.write_pdf(config.output, stylesheets=stylesheets)
 
         print(
