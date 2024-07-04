@@ -1,5 +1,5 @@
-import argparse
 import logging
+import os
 import sys
 import time
 from pathlib import Path
@@ -13,6 +13,20 @@ from vkr_build.document_builder import DocumentBuilder
 from vkr_build.preprocess_stages.images import ImagesPreprocessStage
 from vkr_build.validators.toc import TableOfContentsValidator
 from vkr_build.validators.validator import DocumentValidator
+
+from .cli import cli_parser
+
+
+def search_files(root: Path):
+    return sorted(
+        map(
+            Path,
+            filter(
+                lambda filename: filename.endswith(".md") or filename.endswith(".html"),
+                os.listdir(root),
+            ),
+        )
+    )
 
 
 def collect_files_to_html(filenames: list[Path]):
@@ -34,24 +48,16 @@ def collect_files_to_html(filenames: list[Path]):
     )
 
 
-cli_parser = argparse.ArgumentParser(
-    prog="vkr-build",
-    description="Автоматизированное решение вёрстки курсовых/дипломных работ.",
-)
-
-cli_parser.add_argument(
-    "-c", "--config-path", dest="config_path", type=Path, default=Path("document.toml")
-)
-
-
 def run():
     args = cli_parser.parse_args()
 
     try:
         config = read_config(args.config_path)
 
+        filenames = config.files or search_files(Path("."))
+
         print("Файлы:")
-        for filename in config.files:
+        for filename in filenames:
             print(" ", filename)
 
         print()
@@ -62,7 +68,7 @@ def run():
         print("Конвертация файлов... ", end="")
         sys.stdout.flush()
 
-        source_html = collect_files_to_html(config.files)
+        source_html = collect_files_to_html(filenames)
 
         print(time.time() - reading_files_time, "секунд")
 

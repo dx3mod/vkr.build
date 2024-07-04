@@ -9,7 +9,7 @@ class DocumentConfiguration(BaseModel):
     chapter_prefix: str = Field(default="Глава ")
     toc_title: str = Field(default="Оглавление")
 
-    files: list[Path]
+    files: list[Path] = Field(default=[])
     output: Path = Field(default=Path("output.pdf"))
 
     css: Path = Field(default=Path("custom.css"))
