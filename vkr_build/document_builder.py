@@ -51,12 +51,7 @@ class DocumentBuilder:
 
         document.body.append(self._soup)  # type: ignore
 
-        return weasyprint.HTML(
-            string=str(document),
-            base_url=".",
-            encoding="utf-8",
-            url_fetcher=weasyprint.default_url_fetcher,
-        )
+        return document
 
     def _preprocess_numbering(self):
         stage = NumberingPreprocessStage(

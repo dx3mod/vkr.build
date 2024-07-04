@@ -47,7 +47,7 @@ def collect_files_to_html(filenames: list[Path]):
         "\n\n".join(raw_sources),
         "html",
         format="markdown+smart",
-        extra_args=["-V", "lang=ru"],
+        extra_args=["-V", "lang=ru", "--no-highlight"],
     )
 
 
@@ -84,25 +84,26 @@ def run():
         document = DocumentBuilder(source_html, config=config)
         document.add_preprocess_stage(ImagesPreprocessStage())
 
-        html = document.build()
+        document_soup = document.build()
 
         print(time.time() - document_processing_time, "секунд")
 
         # Валидация
 
         print()
-        print("Валидация:")
+        print("Ошибки:")
 
         for validator in VALIDATORS:
             messages = validator.validate(
                 DocumentValidator.Document(
-                    soup=document._soup, table_of_contents=document.table_of_contents
+                    soup=document_soup, table_of_contents=document.table_of_contents
                 )
             )
 
             for message in messages:
                 print(" ", message)
 
+        print(" ...")
         print()
 
         # Компиляция
@@ -122,6 +123,13 @@ def run():
         print("Файл сохранён по пути:", config.output)
 
         start_weasyprint_time = time.time()
+
+        html = weasyprint.HTML(
+            string=str(document_soup),
+            base_url=".",
+            encoding="utf-8",
+            url_fetcher=weasyprint.default_url_fetcher,
+        )
 
         html.write_pdf(config.output, stylesheets=stylesheets)
 
