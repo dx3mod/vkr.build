@@ -11,13 +11,12 @@ import weasyprint
 from vkr_build.config import read_config
 from vkr_build.document_builder import DocumentBuilder
 from vkr_build.preprocess_stages.images import ImagesPreprocessStage
-from vkr_build.validators.big_code import BigCodeValidator
 from vkr_build.validators.toc import TableOfContentsValidator
 from vkr_build.validators.validator import DocumentValidator
 
 from .cli import cli_parser
 
-VALIDATORS = [TableOfContentsValidator(), BigCodeValidator()]
+VALIDATORS = [TableOfContentsValidator()]
 
 
 def search_files(root: Path):
@@ -103,7 +102,7 @@ def run():
             for message in messages:
                 print(" ", message)
 
-        print(" ...")
+        print("  ...")
         print()
 
         # Компиляция
