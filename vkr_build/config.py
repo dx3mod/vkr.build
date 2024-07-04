@@ -6,12 +6,17 @@ from pydantic import BaseModel, Field
 
 
 class DocumentConfiguration(BaseModel):
-    chapter_prefix: str = Field(default="Глава ")
-    toc_title: str = Field(default="Оглавление")
+    class TableOfContents(BaseModel):
+        title: str = Field(default="Оглавление")
+
+    class Chapter(BaseModel):
+        prefix: str = Field(default="Глава")
+
+    toc: TableOfContents = Field(default=TableOfContents())
+    chapter: Chapter = Field(default=Chapter())
 
     files: list[Path] = Field(default=[])
     output: Path = Field(default=Path("output.pdf"))
-
     css: Path = Field(default=Path("custom.css"))
 
 

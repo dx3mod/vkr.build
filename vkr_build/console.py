@@ -78,9 +78,7 @@ def run():
         print("Процессинг документа... ", end="")
         sys.stdout.flush()
 
-        document = DocumentBuilder(
-            source_html,
-        )
+        document = DocumentBuilder(source_html, config=config)
         document.add_preprocess_stage(ImagesPreprocessStage())
 
         html = document.build()

@@ -5,7 +5,9 @@ from vkr_build.toc import TableOfContents
 
 
 class NumberingPreprocessStage(PreprocessStage):
-    def __init__(self) -> None:
+    def __init__(self, /, chapter_prefix: str) -> None:
+        self._chapter_prefix = chapter_prefix.strip() + " "
+
         self._chapter_counter = 1
         self._appendix_counter = 1
 
@@ -33,7 +35,9 @@ class NumberingPreprocessStage(PreprocessStage):
                         )
                         self._appendix_counter += 1
                     elif self._numbering:
-                        title = f"Глава {self._chapter_counter}. {title}"
+                        title = (
+                            f"{self._chapter_prefix}{self._chapter_counter}. {title}"
+                        )
                         self._chapter_counter += 1
                 case "h2":
                     self._subsection_counter = 1
