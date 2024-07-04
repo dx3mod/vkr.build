@@ -11,10 +11,13 @@ import weasyprint
 from vkr_build.config import read_config
 from vkr_build.document_builder import DocumentBuilder
 from vkr_build.preprocess_stages.images import ImagesPreprocessStage
+from vkr_build.validators.big_code import BigCodeValidator
 from vkr_build.validators.toc import TableOfContentsValidator
 from vkr_build.validators.validator import DocumentValidator
 
 from .cli import cli_parser
+
+VALIDATORS = [TableOfContentsValidator(), BigCodeValidator()]
 
 
 def search_files(root: Path):
@@ -90,8 +93,7 @@ def run():
         print()
         print("Валидация:")
 
-        validators = [TableOfContentsValidator()]
-        for validator in validators:
+        for validator in VALIDATORS:
             messages = validator.validate(
                 DocumentValidator.Document(
                     soup=document._soup, table_of_contents=document.table_of_contents
@@ -104,6 +106,9 @@ def run():
         print()
 
         # Компиляция
+
+        if args.validate_only:
+            return
 
         stylesheets = []
 

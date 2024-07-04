@@ -13,8 +13,3 @@ class DocumentValidator(ABC):
 
     @abstractmethod
     def validate(self, document: Document) -> list[str]: ...
-
-
-class DocumentValidationErrors(Exception):
-    def __init__(self, *args: object) -> None:
-        super().__init__(*args)

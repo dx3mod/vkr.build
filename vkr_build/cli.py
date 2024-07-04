@@ -9,3 +9,5 @@ cli_parser = argparse.ArgumentParser(
 cli_parser.add_argument(
     "-c", "--config-path", dest="config_path", type=Path, default=Path("document.toml")
 )
+
+cli_parser.add_argument("--validate-only", dest="validate_only", action="store_true")

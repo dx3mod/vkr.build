@@ -3,6 +3,15 @@ from bs4 import BeautifulSoup
 from vkr_build.preprocess_stages.stage import PreprocessStage
 from vkr_build.toc import TableOfContents
 
+NON_NUMBERING_TITLES = [
+    "Введение",
+    "Заключение",
+    "Список литературы",
+    "Список источников",
+    "Список использованных источников",
+    "Список использованных\nисточников",
+]
+
 
 class NumberingPreprocessStage(PreprocessStage):
     def __init__(self, /, chapter_prefix: str) -> None:
@@ -23,7 +32,10 @@ class NumberingPreprocessStage(PreprocessStage):
             classes = header.get("class") or ""
 
             if header.name == "h1":
-                self._numbering = "non-numbering" not in classes
+                if title in NON_NUMBERING_TITLES:
+                    self._numbering = False
+                else:
+                    self._numbering = "non-numbering" not in classes
 
             match header.name:
                 case "h1":
