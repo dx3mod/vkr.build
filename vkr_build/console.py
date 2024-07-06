@@ -7,6 +7,8 @@ from pathlib import Path
 import pydantic
 import pypandoc
 import weasyprint
+import weasyprint.text
+import weasyprint.text.fonts
 
 from vkr_build.config import read_config
 from vkr_build.document_builder import DocumentBuilder
@@ -111,10 +113,13 @@ def run():
             return
 
         stylesheets = []
+        font_config = weasyprint.text.fonts.FontConfiguration()
 
         if config.css.exists():
             print("Использованы стили:", config.css)
-            stylesheets.append(weasyprint.CSS(filename=config.css))
+            stylesheets.append(
+                weasyprint.CSS(filename=config.css, font_config=font_config)
+            )
 
         logger = logging.getLogger("weasyprint")
         logger.addHandler(logging.StreamHandler(sys.stdout))
@@ -130,7 +135,7 @@ def run():
             url_fetcher=weasyprint.default_url_fetcher,
         )
 
-        html.write_pdf(config.output, stylesheets=stylesheets)
+        html.write_pdf(config.output, stylesheets=stylesheets, font_config=font_config)
 
         print(
             "Время компиляции PDF-документа заняло",
