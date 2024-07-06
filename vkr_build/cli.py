@@ -11,3 +11,5 @@ cli_parser.add_argument(
 )
 
 cli_parser.add_argument("--validate-only", dest="validate_only", action="store_true")
+
+cli_parser.add_argument("--html-only", dest="html_only", action="store_true")

@@ -124,8 +124,6 @@ def run():
         logger = logging.getLogger("weasyprint")
         logger.addHandler(logging.StreamHandler(sys.stdout))
 
-        print("Файл сохранён по пути:", config.output)
-
         start_weasyprint_time = time.time()
 
         html = weasyprint.HTML(
@@ -135,7 +133,16 @@ def run():
             url_fetcher=weasyprint.default_url_fetcher,
         )
 
+        if args.html_only:
+            html_doc_path = config.output.with_suffix(".html")
+            with open(html_doc_path, "w") as file:
+                file.write(str(document_soup))
+
+            print("Файл сохранён по пути:", html_doc_path)
+            return
+
         html.write_pdf(config.output, stylesheets=stylesheets, font_config=font_config)
+        print("Файл сохранён по пути:", config.output)
 
         print(
             "Время компиляции PDF-документа заняло",
