@@ -31,7 +31,7 @@
 
   body {
     /* Настройка типографии. */
-    font-family: var(--font-main, 'Times New Roman'), Times, serif;
+    font-family: var(--font-main, 'XO Thames'), 'Times New Roman', Times, serif;
     font-size: 14pt;
     line-height: 1.5;
     text-align: justify;

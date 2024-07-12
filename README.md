@@ -15,8 +15,9 @@
 
 #### Зависимости 
 
-- Python 3.12+
+- Python 3.11+
 - [Pandoc](https://pandoc.org/)
+- Свободные шрифты [XO](https://myoffice.ru/products/fonts/) (по желанию)
 
 ```
 pip install --upgrade vkr-build

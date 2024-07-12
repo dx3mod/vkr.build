@@ -9,7 +9,7 @@ packages = [{ include = "vkr_build" }]
 include = ["styles/*"]
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.11"
 weasyprint = "^62.3"
 pydantic = "^2.7.4"
 beautifulsoup4 = "^4.12.3"
